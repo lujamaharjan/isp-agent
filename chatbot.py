@@ -18,7 +18,7 @@ DEFAULT_REASONING = "low"
 
 @cl.data_layer
 def get_data_layer():
-    return SQLAlchemyDataLayer(conninfo=os.environ["DATABASE_URL"])
+    return SQLAlchemyDataLayer(conninfo=os.environ["DATABASE_URL"],show_logger=True)
 
 @cl.password_auth_callback
 async def auth_callback(username:str, password:str) -> Optional[str]:
@@ -42,6 +42,7 @@ def build_runnable(model_id: str, reasoning: str):
 
 @cl.on_chat_start
 async def on_chat_start():
+    cl.user_session.set("chat_history", [])
     model_mode = cl.Mode(
         id="model",
         name="Model",
@@ -68,9 +69,27 @@ async def on_chat_start():
 @cl.on_chat_resume
 async def on_chat_resume(thread):
     cl.user_session.set("runnable_cache", {})
+    # cl.user_session.set("chat_history", [])
 
+    # for step in thread.get("steps", []):
+    #     if step.get("type") == "user_message":
+    #         cl.user_session.get("chat_history").append({
+    #             "role": "user",
+    #             "content": step.get("output", "")
+    #         })
+
+    #     elif step.get("type") == "assistant_message":
+    #         cl.user_session.get("chat_history").append({
+    #             "role": "assistant",
+    #             "content": step.get("output", "")
+    #         })
+
+    
 @cl.on_message
 async def on_message(message: cl.Message):
+
+    # cl.user_session.get("chat_history",[]).append({"role": "user", "content": message.content})
+
     model_id = message.modes.get("model", DEFAULT_MODEL) if message.modes else DEFAULT_MODEL
     reasoning = message.modes.get("reasoning", DEFAULT_REASONING) if message.modes else DEFAULT_REASONING
 
@@ -90,3 +109,4 @@ async def on_message(message: cl.Message):
     ):
         await msg.stream_token(chunk)
     await msg.send()
+

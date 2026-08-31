@@ -1,7 +1,12 @@
+import sqlite3
+import json
 from fastapi import FastAPI
 from core.database import init_db
 from chainlit.utils import mount_chainlit
 
+
+sqlite3.register_adapter(dict, json.dumps)
+sqlite3.register_adapter(list, json.dumps)
 app = FastAPI()
 
 @app.on_event("startup")
