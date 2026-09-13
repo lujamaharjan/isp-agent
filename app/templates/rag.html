@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="workspace-panel">
+    <div class="workspace-panel__header">
+        <div>
+            <p class="eyebrow">Knowledge source</p>
+            <h2>Prepare your data for production retrieval</h2>
+        </div>
+        <div class="utility-pill">Ready for indexing</div>
+    </div>
+
+    <form class="rag-form">
+        <div class="form-main">
+            <div class="form-group textarea-group">
+                <label for="documentText">Document content</label>
+                <textarea id="documentText" name="documentText" rows="12" placeholder="Paste product documentation, onboarding guides, FAQs, or internal playbooks here..."></textarea>
+            </div>
+            <button type="submit" class="btn primary-btn form-submit">Generate RAG pipeline</button>
+        </div>
+    </form>
+</section>
+
+{% endblock %}
